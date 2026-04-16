@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebula Quest | Stellar Task Mastery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #050510;
+            --accent-primary: #8a2be2;
+            --accent-secondary: #4b0082;
+            --text-main: #ffffff;
+            --text-muted: #a0a0c0;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --high-priority: #ff4d4d;
+            --mid-priority: #ffcc00;
+            --low-priority: #4dff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #1a0b2e, var(--bg-deep));
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Nebula Background Elements */
+        .nebula {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+        }
+
+        .n1 { top: -100px; left: -100px; }
+        .n2 { bottom: -100px; right: -100px; background: radial-gradient(circle, rgba(75, 0, 130, 0.2) 0%, transparent 70%); }
+
+        /* Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        aside {
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #fff, var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .reputation-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .rep-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .rep-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Main Content */
+        main {
+            padding: 3rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .btn-connect {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-connect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
+        }
+
+        /* Quest Grid */
+        .quest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .quest-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s, border-color 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quest-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-primary);
+        }
+
+        .priority-indicator {
+            width: 4px;
+            height: 40px;
+            position: absolute;
+            left: 0;
+            top: 2rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .priority-high { background: var(--high-priority); }
+        .priority-medium { background: var(--mid-priority); }
+        .priority-low { background: var(--low-priority); }
+
+        .quest-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .status-tag {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+        }
+
+        .quest-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .quest-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .quest-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-complete {
+            border-color: var(--low-priority);
+            color: var(--low-priority);
+        }
+
+        /* Floating Button */
+        .fab {
+            position: fixed;
+            bottom: 3rem;
+            right: 3rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.5);
+            transition: transform 0.2s;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @media (max-width: 900px) {
+            .app-container { grid-template-columns: 1fr; }
+            aside { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="nebula n1"></div>
+    <div class="nebula n2"></div>
+
+    <div class="app-container">
+        <aside>
+            <div class="logo">NEBULA QUEST</div>
+            <div class="reputation-card">
+                <div class="rep-value">1,250</div>
+                <div class="rep-label">Stellar Reputation</div>
+            </div>
+            
+            <nav style="margin-top: 2rem;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1rem;">COLLECTIONS</p>
+                <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                    <div style="color: var(--accent-primary);">✦ Active Quests</div>
+                    <div style="color: var(--text-muted);">✦ Archive</div>
+                    <div style="color: var(--text-muted);">✦ Achievements</div>
+                </div>
+            </nav>
+        </aside>
+
+        <main>
+            <header>
+                <div>
+                    <h1 style="font-size: 2rem;">Cosmic Command</h1>
+                    <p style="color: var(--text-muted);">Welcome back, Commander. 4 Quests pending.</p>
+                </div>
+                <button class="btn-connect">Connect Soroban</button>
+            </header>
+
+            <div class="quest-grid">
+                <!-- High Priority Quest -->
+                <div class="quest-card animate-fade" style="animation-delay: 0.1s;">
+                    <div class="priority-indicator priority-high"></div>
+                    <div class="quest-header">
+                        <span class="status-tag">In Progress</span>
+                        <span style="font-size: 0.7rem; color: var(--text-muted);">#82A1</span>
+                    </div>
+                    <div class="quest-title">Stellar Bridge Expansion</div>
+                    <div class="quest-desc">Optimize the multi-sig protocol for the cross-chain bridge implementation. Ensure high throughput.</div>
+                    <div class="quest-actions">
+                        <button class="btn-action btn-complete">Complete</button>
+                        <button class="btn-action">Edit</button>
+                    </div>
+                </div>
+
+                <!-- Mid Priority Quest -->
+                <div class="quest-card animate-fade" style="animation-delay: 0.2s;">
+                    <div class="priority-indicator priority-medium"></div>
+                    <div class="quest-header">
+                        <span class="status-tag">Todo</span>
+                        <span style="font-size: 0.7rem; color: var(--text-muted);">#9F22</span>
+                    </div>
+                    <div class="quest-title">Liquidity Mining Audit</div>
+                    <div class="quest-desc">Review the smart contract logic for the upcoming liquidity provider rewards program.</div>
+                    <div class="quest-actions">
+                        <button class="btn-action">Start</button>
+                        <button class="btn-action">Edit</button>
+                    </div>
+                </div>
+
+                <!-- Low Priority Quest -->
+                <div class="quest-card animate-fade" style="animation-delay: 0.3s;">
+                    <div class="priority-indicator priority-low"></div>
+                    <div class="quest-header">
+                        <span class="status-tag">Todo</span>
+                        <span style="font-size: 0.7rem; color: var(--text-muted);">#11B0</span>
+                    </div>
+                    <div class="quest-title">Community Voice Integration</div>
+                    <div class="quest-desc">Implement a simple snapshot-based voting mechanism for the DAO dashboard.</div>
+                    <div class="quest-actions">
+                        <button class="btn-action">Start</button>
+                        <button class="btn-action">Edit</button>
+                    </div>
+                </div>
+
+                <!-- Completed Quest -->
+                <div class="quest-card animate-fade" style="animation-delay: 0.4s; opacity: 0.6;">
+                    <div class="priority-indicator priority-low" style="background: var(--text-muted);"></div>
+                    <div class="quest-header">
+                        <span class="status-tag" style="background: rgba(77, 255, 136, 0.2); color: var(--low-priority);">Completed</span>
+                    </div>
+                    <div class="quest-title">Genesis Contract Deploy</div>
+                    <div class="quest-desc">Initial deployment of the Nebula Quest logic on Stellar Testnet. Successful execution.</div>
+                    <div class="quest-actions">
+                        <button class="btn-action">Reopen</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="fab">+</div>
+
+    <script>
+        // Simple interactive mockups
+        document.querySelectorAll('.btn-action').forEach(btn => {
+            btn.addEventListener('click', () => {
+                alert("Smart Contract Interaction: Calling NebulaQuestContract...");
+            });
+        });
+
+        document.querySelector('.fab').addEventListener('click', () => {
+            alert("Opening 'Launch Quest' Portal...");
+        });
+
+        document.querySelector('.btn-connect').addEventListener('click', function() {
+            this.textContent = "GBH...R4A Connected";
+            this.style.background = "rgba(138, 43, 226, 0.2)";
+            this.style.border = "1px solid var(--accent-primary)";
+        });
+    </script>
+</body>
+</html>
